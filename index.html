@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>英文語塊聽口大挑戰 🚀</title>
+  <style>
+    :root {
+      --primary-color: #4A90E2;
+      --secondary-color: #FF6B6B;
+      --bg-color: #F0F4F8;
+      --card-bg: #FFFFFF;
+      --text-color: #2C3E50;
+      --accent-color: #2ECC71;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #E0F7FA 0%, #E8EAF6 100%);
+      color: var(--text-color);
+      margin: 0;
+      padding: 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background-color: var(--card-bg);
+      width: 100%;
+      max-width: 480px;
+      border-radius: 20px;
+      padding: 25px 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      text-align: center;
+      position: relative;
+    }
+
+    h1 {
+      font-size: 26px;
+      color: var(--primary-color);
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      font-size: 22px;
+      margin-bottom: 15px;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    /* Input Style */
+    input[type="text"] {
+      width: 80%;
+      padding: 14px;
+      font-size: 18px;
+      border: 2px solid #CBD5E1;
+      border-radius: 12px;
+      margin: 10px 0 20px;
+      text-align: center;
+      outline: none;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--primary-color);
+    }
+
+    /* Buttons */
+    .btn {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 16px 28px;
+      font-size: 20px;
+      font-weight: bold;
+      border-radius: 15px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+      box-shadow: 0 4px 10px rgba(74, 144, 226, 0.3);
+      transition: transform 0.1s;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-skip {
+      background-color: #94A3B8;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 15px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-audio {
+      background-color: #9B59B6;
+      font-size: 24px;
+      padding: 20px;
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      margin: 10px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 15px rgba(155, 89, 182, 0.3);
+    }
+
+    .btn-hint {
+      background-color: #F1F5F9;
+      color: #64748B;
+      border: 1px dashed #94A3B8;
+      padding: 8px 16px;
+      font-size: 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      margin: 8px auto;
+      display: inline-block;
+    }
+
+    .hint-text {
+      font-size: 16px;
+      color: #E67E22;
+      font-weight: bold;
+      margin: 6px 0;
+      min-height: 24px;
+    }
+
+    .option-btn {
+      background-color: #F1F5F9;
+      color: var(--text-color);
+      border: 2px solid #E2E8F0;
+      padding: 18px;
+      font-size: 20px;
+      font-weight: bold;
+      border-radius: 15px;
+      margin: 10px 0;
+      width: 100%;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .option-btn:hover {
+      background-color: #E2E8F0;
+    }
+
+    /* Toast 鼓勵彈窗 */
+    .praise-toast {
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.5);
+      background-color: #2ECC71;
+      color: white;
+      font-size: 28px;
+      font-weight: bold;
+      padding: 15px 30px;
+      border-radius: 30px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 999;
+    }
+
+    .praise-toast.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    /* Progress & Badges */
+    .progress {
+      font-size: 16px;
+      color: #64748B;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .stars {
+      font-size: 36px;
+      color: #FFD700;
+      margin: 10px 0;
+    }
+
+    .chunk-display {
+      font-size: 24px;
+      font-weight: bold;
+      color: #1E293B;
+      margin: 10px 0;
+      padding: 15px;
+      background: #F8FAFC;
+      border-radius: 12px;
+      border-left: 5px solid var(--primary-color);
+    }
+
+    .mic-btn {
+      background-color: var(--secondary-color);
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      font-size: 32px;
+      margin: 15px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 15px rgba(255, 107, 107, 0.4);
+      cursor: pointer;
+    }
+
+    .mic-btn.recording {
+      animation: pulse 1.2s infinite;
+      background-color: #E74C3C;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .score-card {
+      background: #F0FDF4;
+      border: 2px solid #86EFAC;
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+
+    .feedback-text {
+      font-size: 20px;
+      font-weight: bold;
+      color: #15803D;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- 答對時的彈出鼓勵提示 -->
+  <div id="praise-toast" class="praise-toast">Awesome! 🎉</div>
+
+  <!-- 畫面 1: 登入畫面 -->
+  <div id="start-screen" class="screen active">
+    <h1>英文語塊聽口大挑戰 🎧🎤</h1>
+    <p style="color: #64748B; font-size: 16px;">輕鬆練習語感，挑戰 100 分滿分！</p>
+    
+    <div style="margin-top: 25px;">
+      <label style="font-weight: bold; font-size: 18px;">座號：</label><br>
+      <input type="text" id="seat-num" placeholder="例如: 05" style="width: 60%;"><br>
+      <label style="font-weight: bold; font-size: 18px;">姓名：</label><br>
+      <input type="text" id="student-name" placeholder="例如: 王小明" style="width: 80%;">
+    </div>
+
+    <button class="btn" onclick="playClickSound(); startQuiz();">開始挑戰 🚀</button>
+  </div>
+
+  <!-- 畫面 2: 聽力測驗 (15 題 3選1，共 60 分) -->
+  <div id="listening-screen" class="screen">
+    <div class="progress" id="listen-progress">聽力關卡: 1 / 15</div>
+    <h2>聽 AI 唸語塊，選出正確意思</h2>
+    
+    <button class="btn btn-audio" onclick="playClickSound(); playAudio();">🔊</button>
+    <p style="color: #94A3B8; font-size: 14px; margin: 5px 0;">點擊喇叭可重複聽</p>
+
+    <!-- 中文提示按鈕 -->
+    <button class="btn-hint" onclick="playClickSound(); toggleHint('listen-hint');">💡 顯示英文提示</button>
+    <div class="hint-text" id="listen-hint" style="display: none;"></div>
+
+    <div id="options-container" style="margin-top: 10px;"></div>
+  </div>
+
+  <!-- 畫面 3: 口說挑戰 (5 題，共 40 分) -->
+  <div id="speaking-screen" class="screen">
+    <div class="progress" id="speak-progress">口說關卡: 1 / 5</div>
+    <h2>請跟讀這個語塊</h2>
+    
+    <div class="chunk-display" id="speaking-target">recover from the flu</div>
+    <button class="btn btn-audio" style="width: 50px; height: 50px; font-size: 18px; padding: 0;" onclick="playClickSound(); playSpeakTarget();">🔊 聽示範</button>
+
+    <!-- 中文提示按鈕 -->
+    <div>
+      <button class="btn-hint" onclick="playClickSound(); toggleHint('speak-hint');">💡 顯示中文意思</button>
+      <div class="hint-text" id="speak-hint" style="display: none;"></div>
+    </div>
+
+    <div class="mic-btn" id="mic-btn" onclick="playClickSound(); toggleRecording();">🎤</div>
+    <p id="speak-status" style="font-size: 16px; color: #64748B;">點擊麥克風開始念</p>
+
+    <div id="speak-result" style="display: none;">
+      <div class="stars" id="star-rating">⭐⭐⭐</div>
+      <p id="recognized-text" style="font-size: 16px; color: #475569;"></p>
+      <button class="btn" onclick="playClickSound(); nextSpeakingQuestion();">下一題 ➔</button>
+    </div>
+
+    <!-- 跳過按鈕 -->
+    <button class="btn-skip" id="skip-btn" onclick="playClickSound(); skipSpeakingQuestion();">跳過此題 ⏭️</button>
+  </div>
+
+  <!-- 畫面 4: 成績結算 -->
+  <div id="result-screen" class="screen">
+    <h1>🎉 挑戰完成！</h1>
+    <p style="font-size: 18px;" id="result-user-info"></p>
+
+    <div class="score-card">
+      <div style="font-size: 18px; color: #475569;">總得分</div>
+      <div style="font-size: 48px; font-weight: bold; color: var(--primary-color);" id="final-score">0 分</div>
+      <div class="stars" id="final-stars">⭐⭐⭐⭐⭐</div>
+      <div class="feedback-text" id="feedback-msg">太棒了！你的語感超級好！</div>
+    </div>
+
+    <button class="btn" onclick="playClickSound(); location.reload();">再挑戰一次 🔄</button>
+  </div>
+</div>
+
+<script>
+// Web Audio API 合成聲音效 (無須外部音樂檔)
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playSound(freq, type, duration) {
+  try {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + duration);
+  } catch (e) {}
+}
+
+function playClickSound() {
+  playSound(600, 'sine', 0.08);
+}
+
+function playCorrectSound() {
+  playSound(523.25, 'sine', 0.15); // C5
+  setTimeout(() => playSound(659.25, 'sine', 0.25), 100); // E5
+}
+
+function playWrongSound() {
+  playSound(220, 'sawtooth', 0.2); // A3
+}
+
+// 答對時的隨機鼓勵英語詞
+const praiseWords = ["Awesome! 🎉", "Super! ⭐", "Great job! 👍", "Perfect! 💯", "Good chunk! 🔥"];
+
+function triggerPraise() {
+  const word = praiseWords[Math.floor(Math.random() * praiseWords.length)];
+  const toast = document.getElementById('praise-toast');
+  toast.innerText = word;
+  toast.classList.add('show');
+  
+  // 唸出鼓勵詞
+  speakText(word.replace(/[^a-zA-Z ]/g, ""));
+
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 1000);
+}
+
+// 完整題庫資料
+const vocabularyBank = [
+  // 動詞 Verbs
+  { en: "recover from the flu", zh: "從流感中康復", type: "verb" },
+  { en: "suffer from back pain", zh: "受背痛所苦", type: "verb" },
+  { en: "realize the truth", zh: "察覺到真相", type: "verb" },
+  { en: "describe a dream car", zh: "描述夢想中的汽車", type: "verb" },
+  { en: "encourage him to work hard", zh: "鼓勵他努力工作", type: "verb" },
+  { en: "view as a must-have", zh: "視為必備品", type: "verb" },
+  { en: "imagine at a beach", zh: "想像在海灘上", type: "verb" },
+  { en: "remove the price sticker", zh: "移除價格標籤", type: "verb" },
+  { en: "reply right away", zh: "立刻回覆", type: "verb" },
+  { en: "return to hometown", zh: "回到家鄉", type: "verb" },
+  { en: "shocked us all", zh: "使我們所有人震驚", type: "verb" },
+  { en: "whisper a joke", zh: "輕聲講笑話", type: "verb" },
+
+  // 名詞 Nouns
+  { en: "quick recovery", zh: "快速康復", type: "noun" },
+  { en: "get surgery", zh: "接受手術", type: "noun" },
+  { en: "terrible disease", zh: "可怕的疾病", type: "noun" },
+  { en: "newly married couple", zh: "新婚夫妻", type: "noun" },
+  { en: "good view of the sea", zh: "美麗的海景", type: "noun" },
+  { en: "great imagination", zh: "豐富的想像力", type: "noun" },
+  { en: "get a reply", zh: "收到回覆", type: "noun" },
+
+  // 形容詞 Adjectives
+  { en: "shocked and upset", zh: "震驚且沮喪", type: "adj" },
+  { en: "the blind woman", zh: "眼盲的婦人", type: "adj" },
+
+  // 片語 Phrases
+  { en: "turn away", zh: "轉頭不看", type: "phrase" },
+  { en: "try one's best", zh: "盡己所能", type: "phrase" },
+  { en: "day after day", zh: "日復一日", type: "phrase" },
+  { en: "in detail", zh: "詳細地", type: "phrase" },
+  { en: "turn around", zh: "轉身", type: "phrase" },
+  { en: "pass away peacefully", zh: "安詳過世", type: "phrase" },
+  { en: "nothing but a hot bath", zh: "只要洗個熱水澡", type: "phrase" }
+];
+
+let studentInfo = { seat: "", name: "" };
+let listenQuestions = [];
+let speakQuestions = [];
+let currentListenIndex = 0;
+let currentSpeakIndex = 0;
+let totalScore = 0;
+let isRecording = false;
+let recognition = null;
+
+if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SpeechRecognition();
+  recognition.lang = 'en-US';
+  recognition.continuous = false;
+  recognition.interimResults = false;
+}
+
+function startQuiz() {
+  const seat = document.getElementById('seat-num').value.trim();
+  const name = document.getElementById('student-name').value.trim();
+
+  if (!seat || !name) {
+    alert("請先輸入座號與姓名喔！");
+    return;
+  }
+
+  studentInfo = { seat, name };
+
+  const shuffled = [...vocabularyBank].sort(() => 0.5 - Math.random());
+  listenQuestions = shuffled.slice(0, 15);
+  speakQuestions = shuffled.slice(15, 20);
+
+  showScreen('listening-screen');
+  loadListenQuestion();
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function toggleHint(elementId) {
+  const hintEl = document.getElementById(elementId);
+  hintEl.style.display = hintEl.style.display === 'none' ? 'block' : 'none';
+}
+
+// --- 聽力關卡 (15 題) ---
+function loadListenQuestion() {
+  const q = listenQuestions[currentListenIndex];
+  document.getElementById('listen-progress').innerText = `聽力關卡: ${currentListenIndex + 1} / 15`;
+  
+  const hintEl = document.getElementById('listen-hint');
+  hintEl.innerText = `💡 英文：${q.en}`;
+  hintEl.style.display = 'none';
+
+  playAudio();
+
+  const optionsContainer = document.getElementById('options-container');
+  optionsContainer.innerHTML = "";
+
+  let wrongOptions = vocabularyBank
+    .filter(item => item.zh !== q.zh)
+    .sort(() => 0.5 - Math.random())
+    .slice(0, 2);
+
+  let options = [q, ...wrongOptions].sort(() => 0.5 - Math.random());
+
+  options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerText = opt.zh;
+    btn.onclick = () => {
+      playClickSound();
+      checkListenAnswer(opt.zh === q.zh);
+    };
+    optionsContainer.appendChild(btn);
+  });
+}
+
+function playAudio() {
+  const text = listenQuestions[currentListenIndex].en;
+  speakText(text);
+}
+
+function speakText(text) {
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'en-US';
+  utterance.rate = 0.85;
+  window.speechSynthesis.speak(utterance);
+}
+
+function checkListenAnswer(isCorrect) {
+  if (isCorrect) {
+    playCorrectSound();
+    triggerPraise();
+    totalScore += 4; // 15 題 x 4 分 = 60 分
+  } else {
+    playWrongSound();
+  }
+  
+  currentListenIndex++;
+  setTimeout(() => {
+    if (currentListenIndex < 15) {
+      loadListenQuestion();
+    } else {
+      showScreen('speaking-screen');
+      loadSpeakQuestion();
+    }
+  }, isCorrect ? 800 : 300);
+}
+
+// --- 口說關卡 (5 題) ---
+function loadSpeakQuestion() {
+  const q = speakQuestions[currentSpeakIndex];
+  document.getElementById('speak-progress').innerText = `口說關卡: ${currentSpeakIndex + 1} / 5`;
+  document.getElementById('speaking-target').innerText = q.en;
+  
+  const hintEl = document.getElementById('speak-hint');
+  hintEl.innerText = `💡 中文：${q.zh}`;
+  hintEl.style.display = 'none';
+
+  document.getElementById('speak-result').style.display = 'none';
+  document.getElementById('skip-btn').style.display = 'inline-block';
+  document.getElementById('speak-status').innerText = '點擊麥克風開始念';
+  document.getElementById('mic-btn').classList.remove('recording');
+}
+
+function playSpeakTarget() {
+  speakText(speakQuestions[currentSpeakIndex].en);
+}
+
+function toggleRecording() {
+  if (!recognition) {
+    alert("您的瀏覽器不支援語音辨識，您可以點擊「跳過此題」繼續！");
+    return;
+  }
+
+  const micBtn = document.getElementById('mic-btn');
+  const status = document.getElementById('speak-status');
+
+  if (!isRecording) {
+    isRecording = true;
+    micBtn.classList.add('recording');
+    status.innerText = "聆聽中...請朗讀上面的英文";
+    recognition.start();
+
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript.toLowerCase();
+      isRecording = false;
+      micBtn.classList.remove('recording');
+      evaluateSpeaking(transcript);
+    };
+
+    recognition.onerror = () => {
+      isRecording = false;
+      micBtn.classList.remove('recording');
+      status.innerText = "沒聽清楚，再試一次點擊麥克風";
+    };
+  }
+}
+
+function evaluateSpeaking(userSpeech) {
+  const target = speakQuestions[currentSpeakIndex].en.toLowerCase();
+  const status = document.getElementById('speak-status');
+  const resultDiv = document.getElementById('speak-result');
+  const starRating = document.getElementById('star-rating');
+  const recognizedText = document.getElementById('recognized-text');
+
+  let stars = 3;
+  let scoreGained = 8;
+
+  recognizedText.innerText = `你念的是: "${userSpeech}"`;
+  if (userSpeech.includes(target) || target.includes(userSpeech)) {
+    stars = 3;
+    scoreGained = 8;
+    playCorrectSound();
+    triggerPraise();
+  } else if (userSpeech.length > 3) {
+    stars = 2;
+    scoreGained = 5;
+    playCorrectSound();
+  } else {
+    stars = 1;
+    scoreGained = 2;
+    playWrongSound();
+  }
+
+  totalScore += scoreGained;
+
+  starRating.innerText = "⭐".repeat(stars);
+  status.innerText = "完成！";
+  resultDiv.style.display = 'block';
+  document.getElementById('skip-btn').style.display = 'none';
+}
+
+function skipSpeakingQuestion() {
+  totalScore += 2; // 跳過給予 1 星分數 (2 分)
+  nextSpeakingQuestion();
+}
+
+function nextSpeakingQuestion() {
+  currentSpeakIndex++;
+  if (currentSpeakIndex < 5) {
+    loadSpeakQuestion();
+  } else {
+    showFinalResult();
+  }
+}
+
+// --- 成績結算 ---
+function showFinalResult() {
+  showScreen('result-screen');
+  const finalScore = Math.min(100, Math.round(totalScore));
+  
+  document.getElementById('result-user-info').innerText = `${studentInfo.seat} 號 ${studentInfo.name}`;
+  document.getElementById('final-score').innerText = `${finalScore} 分`;
+
+  let starsCount = Math.ceil(finalScore / 20);
+  document.getElementById('final-stars').innerText = "⭐".repeat(starsCount);
+
+  let feedback = "";
+  if (finalScore >= 90) {
+    feedback = "🏆 太優秀了！你是英文語塊大師！";
+  } else if (finalScore >= 75) {
+    feedback = "🌟 很讚喔！語感越來越棒了，繼續保持！";
+  } else if (finalScore >= 60) {
+    feedback = "👍 做得好！多聽幾次一定能拿滿分！";
+  } else {
+    feedback = "💪 不要氣餒！再練習一次，你一定會進步！";
+  }
+
+  document.getElementById('feedback-msg').innerText = feedback;
+}
+</script>
+</body>
+</html>
